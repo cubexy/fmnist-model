@@ -134,7 +134,7 @@ def run():
     maxnumepochs = 3
 
     # device=torch.device("cuda:0")
-    device = torch.device("cpu")
+    device = torch.device("mps") # optimize for apple silicon (swap for "cpu" otherwise)
 
     datatransforms = transforms.Compose(
         [
