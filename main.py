@@ -145,7 +145,10 @@ class areallyoldschoolneuralnet(torch.nn.Module):  # google for Nirvana Dumb :)
         super().__init__()
 
         # your code here
-        self.fc1 = None  # for one neural network layer
+        self.fc1 = torch.nn.Linear(indims,300)
+        self.fc2 = torch.nn.Linear(300,100)
+        self.fc3 = torch.nn.Linear(100, numcl)
+        self.relu = torch.nn.ReLU()
         # you may need to define more linear layers
 
         # for a better model: convolutions, (dropout)
@@ -154,8 +157,11 @@ class areallyoldschoolneuralnet(torch.nn.Module):  # google for Nirvana Dumb :)
         v = x.view((-1, 28 * 28))  # flattens the (batch, 28, 28) into a (batch, 28*28)
 
         # your code here
-
-        return None
+        v = self.fc1(v)
+        v = self.fc2(v)
+        v = self.relu(v)
+        v = self.fc3(v)
+        return v
 
 
 def run():
@@ -177,7 +183,7 @@ def run():
         'testingValues': datasets.FashionMNIST('./data', train=False, download=True, transform=dataTransformer)
     }
     numberOfClasses = 10
-    totalDimensions = 784
+    totalDimensions = 784 # 28*28
 
     dataloaders = {
         'train': torch.utils.data.DataLoader(dataset['trainingValues'], batch_size=batches, shuffle=False,
@@ -189,7 +195,8 @@ def run():
     }
 
     # model ( simple linear regression model )
-    model = onelinear(totalDimensions, numberOfClasses).to(device)
+    # model = onelinear(totalDimensions, numberOfClasses).to(device)
+    model = areallyoldschoolneuralnet(totalDimensions, numberOfClasses).to(device)
 
     # loss - cross entropy loss that penalizes wrong guesses
     loss = torch.nn.CrossEntropyLoss(weight=None, size_average=None, ignore_index=-100, reduce=None, reduction='mean')
